@@ -135,7 +135,14 @@ function Entry({ r, idx, proxyUrl }) {
       <div className="num-cell">{String(idx + 1).padStart(2, "0")}</div>
 
       <div className="body-cell">
-        <div className="kicker">{TYPE_LABEL[r.type] || r.type}</div>
+        <div className="kicker">
+          {TYPE_LABEL[r.type] || r.type}
+          {r.ai_assisted && (
+            <span className="ai-tag" title="No coded rule matched this proposal; vote derived from a Claude case-by-case analysis against the policy markdown.">
+              AI · policy
+            </span>
+          )}
+        </div>
         <h3 className="entry-title">{r.title}</h3>
         <p className="rationale">{r.rationale}</p>
         <button

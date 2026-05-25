@@ -1,0 +1,37 @@
+{
+  "name": "BlackRock Investment Stewardship \u2014 Proxy Voting Guidelines for Benchmark Policies (U.S. Securities)",
+  "effective": "January 2026",
+  "source": "blackrock-investment-stewardship-benchmark-guidelines-us.pdf",
+  "rules": {
+    "director_election": {
+      "attendance_pct_min": 75,
+      "max_other_public_boards": 3,
+      "non_indep_disqualifying_committees": [
+        "Audit",
+        "Compensation",
+        "Nominating/Governance"
+      ]
+    },
+    "say_on_pay": {
+      "require_pay_for_performance_aligned": true
+    },
+    "shareholder_governance": {
+      "for_topics": [
+        "eliminate supermajority",
+        "majority voting",
+        "proxy access"
+      ],
+      "against_topics": [
+        "classified board",
+        "cumulative voting"
+      ]
+    },
+    "shareholder_environmental": {
+      "for_topics": [
+        "climate-risk disclosure",
+        "human-rights impact assessment",
+        "workforce diversity reporting"
+      ]
+    }
+  }
+}

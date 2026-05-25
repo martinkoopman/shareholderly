@@ -143,8 +143,9 @@ _TOOL = {
                             "properties": {
                                 "topic": {"type": "string", "description": "One of: 'climate-risk disclosure', 'human-rights impact assessment', 'workforce diversity reporting', 'independent board chair', 'eliminate supermajority', 'special meeting threshold', 'classified board', or a short free-form description if no match."},
                                 "proponent": {"type": "string"},
-                                "summary": {"type": "string"},
+                                "summary": {"type": "string", "description": "A 1-2 sentence plain-English summary of what the proposal asks for."},
                                 "board_position": {"type": "string", "enum": ["FOR", "AGAINST"]},
+                                "full_text": {"type": "string", "description": "Verbatim text of the proposal as printed: the RESOLVED clause, supporting statement, and Board response. Copy verbatim; cap at ~1500 words."},
                                 "_context": _CONTEXT_SCHEMA,
                                 "_sources": _SOURCES_SCHEMA,
                             },

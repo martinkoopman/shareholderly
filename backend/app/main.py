@@ -5,10 +5,11 @@ Run with:   uvicorn app.main:app --reload --port 8000
 
 from dataclasses import asdict
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
+
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import database, policy, proxy_finder, recommender
+from . import database, holdings_importer, policy, policy_importer, proxy_finder, recommender
 
 app = FastAPI(title="Shareholderly API", version="0.1.0")
 
@@ -80,4 +81,54 @@ def get_recommendations(ticker: str):
 
 @app.get("/api/policy")
 def get_policy():
-    return {"markdown": policy.load_policy_markdown()}
+    active = policy.load_active_policy()
+    return {
+        "markdown": policy.load_policy_markdown(),
+        "name": active.get("name"),
+        "effective": active.get("effective"),
+        "rules": active.get("rules", {}),
+    }
+
+
+@app.post("/api/policy/import")
+async def import_policy(file: UploadFile = File(...)):
+    """Replace the active policy with one extracted from an uploaded PDF."""
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Upload must be a .pdf file.")
+    pdf_bytes = await file.read()
+    if len(pdf_bytes) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="PDF exceeds 10 MB upload cap.")
+    try:
+        extracted = policy_importer.import_from_pdf(pdf_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Policy extraction failed: {e}")
+
+    structured = {
+        "name": extracted.get("name", "Imported policy"),
+        "effective": extracted.get("effective", ""),
+        "source": file.filename,
+        "rules": extracted.get("rules", {}),
+    }
+    markdown = extracted.get("markdown") or f"# {structured['name']}\n\n(No markdown summary returned.)"
+    policy.save_active_policy(structured, markdown)
+    return {
+        "name": structured["name"],
+        "effective": structured["effective"],
+        "rules": structured["rules"],
+        "markdown": markdown,
+    }
+
+
+@app.post("/api/funds/{fund_id}/holdings/import")
+async def import_holdings(fund_id: str, file: UploadFile = File(...)):
+    """Replace a fund's holdings with rows parsed from an uploaded CSV."""
+    if not file.filename.lower().endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Upload must be a .csv file.")
+    csv_bytes = await file.read()
+    if len(csv_bytes) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="CSV exceeds 5 MB upload cap.")
+    try:
+        result = holdings_importer.import_csv(fund_id, csv_bytes)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return result

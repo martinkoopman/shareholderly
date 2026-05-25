@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "./api";
 import HoldingsTable from "./components/HoldingsTable.jsx";
 import BallotReview from "./components/BallotReview.jsx";
@@ -11,6 +11,9 @@ export default function App() {
   const [ballot, setBallot] = useState(null);
   const [policyMd, setPolicyMd] = useState(null);
   const [error, setError] = useState(null);
+  const [importingHoldings, setImportingHoldings] = useState(false);
+  const [loadingTicker, setLoadingTicker] = useState(null);
+  const csvRef = useRef(null);
 
   useEffect(() => {
     api.funds().then((fs) => {
@@ -29,11 +32,40 @@ export default function App() {
 
   const openBallot = (ticker) => {
     setError(null);
-    api.recommendations(ticker).then(setBallot).catch((e) => setError(e.message));
+    setLoadingTicker(ticker);
+    api.recommendations(ticker)
+      .then((data) => {
+        setBallot(data);
+        setLoadingTicker(null);
+      })
+      .catch((e) => {
+        setError(e.message);
+        setLoadingTicker(null);
+      });
   };
 
   const openPolicy = () => {
     api.policy().then((p) => setPolicyMd(p.markdown)).catch((e) => setError(e.message));
+  };
+
+  const onHoldingsCsv = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedFund) return;
+    setError(null);
+    setImportingHoldings(true);
+    try {
+      const result = await api.importHoldings(selectedFund.fund_id, file);
+      const fresh = await api.holdings(selectedFund.fund_id);
+      setHoldings(fresh);
+      if (result.rows_skipped) {
+        setError(`Imported ${result.rows_inserted} rows; skipped ${result.rows_skipped} (${result.errors.slice(0, 2).join("; ")}).`);
+      }
+    } catch (ex) {
+      setError(ex.message || String(ex));
+    } finally {
+      setImportingHoldings(false);
+      e.target.value = "";
+    }
   };
 
   return (
@@ -78,11 +110,37 @@ export default function App() {
 
           {!selectedFund && <div className="empty">Select a fund to begin.</div>}
 
-          {selectedFund && !ballot && (
+          {loadingTicker && !ballot && (
+            <div className="loading-ballot">
+              <div className="spin"></div>
+              <div className="loading-title">Loading {loadingTicker} ballot…</div>
+              <div className="loading-sub">Applying policy and running case-by-case analysis on novel proposals. This may take 10–30 seconds.</div>
+            </div>
+          )}
+
+          {selectedFund && !ballot && !loadingTicker && (
             <>
-              <h1 className="display-h">
-                Holdings<span className="alt">.</span>
-              </h1>
+              <div className="page-h-row">
+                <h1 className="display-h">
+                  Holdings<span className="alt">.</span>
+                </h1>
+                <div className="page-h-actions">
+                  <input
+                    type="file"
+                    accept=".csv,text/csv"
+                    ref={csvRef}
+                    onChange={onHoldingsCsv}
+                    style={{ display: "none" }}
+                  />
+                  <button
+                    className="btn ghost"
+                    onClick={() => csvRef.current?.click()}
+                    disabled={importingHoldings}
+                  >
+                    {importingHoldings ? "Importing…" : "Import holdings CSV ↑"}
+                  </button>
+                </div>
+              </div>
 
               <HoldingsTable
                 holdings={holdings}
@@ -101,7 +159,17 @@ export default function App() {
         </main>
       </div>
 
-      {policyMd && <PolicyDrawer markdown={policyMd} onClose={() => setPolicyMd(null)} />}
+      {policyMd && (
+        <PolicyDrawer
+          markdown={policyMd}
+          onClose={() => setPolicyMd(null)}
+          onPolicyChanged={() => {
+            // Imported policy: drop any open ballot so the next view re-fetches
+            // recommendations under the new rules.
+            setBallot(null);
+          }}
+        />
+      )}
     </>
   );
 }

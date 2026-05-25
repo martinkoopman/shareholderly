@@ -31,7 +31,6 @@ def main() -> None:
             ticker       TEXT NOT NULL,
             company_name TEXT NOT NULL,
             shares       INTEGER NOT NULL,
-            value_usd    INTEGER NOT NULL,
             PRIMARY KEY (fund_id, ticker),
             FOREIGN KEY (fund_id) REFERENCES funds(fund_id)
         );
@@ -47,13 +46,13 @@ def main() -> None:
     )
 
     cur.executemany(
-        "INSERT INTO holdings VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO holdings VALUES (?, ?, ?, ?)",
         [
-            ("ACME-EQ",  "AAPL", "Apple Inc.",                  120_000,    24_600_000),
-            ("ACME-EQ",  "MSFT", "Microsoft Corporation",        85_000,    36_125_000),
-            ("ACME-EQ",  "XOM",  "Exxon Mobil Corporation",     310_000,    35_960_000),
-            ("ACME-PEN", "AAPL", "Apple Inc.",                  980_000,   200_900_000),
-            ("ACME-PEN", "MSFT", "Microsoft Corporation",       640_000,   272_000_000),
+            ("ACME-EQ",  "AAPL", "Apple Inc.",                  120_000),
+            ("ACME-EQ",  "MSFT", "Microsoft Corporation",        85_000),
+            ("ACME-EQ",  "XOM",  "Exxon Mobil Corporation",     310_000),
+            ("ACME-PEN", "AAPL", "Apple Inc.",                  980_000),
+            ("ACME-PEN", "MSFT", "Microsoft Corporation",       640_000),
         ],
     )
 

@@ -231,6 +231,16 @@ a { color: inherit; }
 .display-h .slash { color: var(--mute); font-weight: 400; }
 .display-h .of { font-weight: 400; color: var(--mute); font-style: italic; font-size: 0.5em; vertical-align: 0.15em; letter-spacing: -0.02em; }
 
+.page-h-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.page-h-row .display-h { flex: 0 1 auto; }
+.page-h-actions { display: flex; gap: 12px; flex-shrink: 0; padding-bottom: 8px; }
+
 .display-sub {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -490,6 +500,49 @@ table.t {
   font-weight: 700;
   color: var(--red);
   margin-bottom: 6px;
+}
+
+.ai-tag {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 2px 7px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+
+.loading-ballot {
+  padding: 120px 32px;
+  text-align: center;
+  font-family: 'Inter Tight', sans-serif;
+}
+.loading-ballot .spin {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--paper-3);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  margin-bottom: 24px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-ballot .loading-title {
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+}
+.loading-ballot .loading-sub {
+  color: var(--mute);
+  font-size: 14px;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.45;
 }
 
 .entry .entry-title {

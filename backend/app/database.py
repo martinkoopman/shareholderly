@@ -25,10 +25,10 @@ def list_holdings(fund_id: str) -> list[dict]:
     with _connect() as conn:
         rows = conn.execute(
             """
-            SELECT ticker, company_name, shares, value_usd
+            SELECT ticker, company_name, shares
             FROM holdings
             WHERE fund_id = ?
-            ORDER BY value_usd DESC
+            ORDER BY shares DESC
             """,
             (fund_id,),
         ).fetchall()
