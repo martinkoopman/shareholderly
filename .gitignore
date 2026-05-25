@@ -1,0 +1,21 @@
+# Secrets
+backend/.env
+
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+
+# SQLite data
+backend/data/holdings.db
+backend/data/extracted_proxies/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# OS
+.DS_Store
+
+# Logs
+*.log

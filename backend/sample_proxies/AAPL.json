@@ -1,0 +1,105 @@
+{
+  "ticker": "AAPL",
+  "company_name": "Apple Inc.",
+  "meeting_date": "2026-03-04",
+  "proxy_statement_url": "https://investor.apple.com/sec-filings/default.aspx",
+  "ballot": [
+    {
+      "item_id": "1a",
+      "type": "director_election",
+      "title": "Election of Director: Tim Cook",
+      "subject_key": "Tim Cook",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "1b",
+      "type": "director_election",
+      "title": "Election of Director: Arthur D. Levinson",
+      "subject_key": "Arthur D. Levinson",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "1c",
+      "type": "director_election",
+      "title": "Election of Director: Andrea Jung",
+      "subject_key": "Andrea Jung",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "2",
+      "type": "auditor_ratification",
+      "title": "Ratification of Ernst & Young LLP as independent auditor",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "3",
+      "type": "say_on_pay",
+      "title": "Advisory vote to approve executive compensation",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "4",
+      "type": "shareholder_environmental",
+      "title": "Shareholder Proposal: Report on climate-risk lobbying alignment",
+      "subject_key": "climate_lobbying",
+      "board_recommendation": "AGAINST"
+    },
+    {
+      "item_id": "5",
+      "type": "shareholder_governance",
+      "title": "Shareholder Proposal: Require an independent board chair",
+      "subject_key": "independent_chair",
+      "board_recommendation": "AGAINST"
+    }
+  ],
+  "statement_data": {
+    "directors": {
+      "Tim Cook": {
+        "independent": false,
+        "tenure_years": 14,
+        "attendance_pct": 100,
+        "other_public_boards": ["Nike"],
+        "committees": []
+      },
+      "Arthur D. Levinson": {
+        "independent": true,
+        "tenure_years": 25,
+        "attendance_pct": 100,
+        "other_public_boards": [],
+        "committees": ["Nominating"]
+      },
+      "Andrea Jung": {
+        "independent": true,
+        "tenure_years": 18,
+        "attendance_pct": 95,
+        "other_public_boards": ["Unilever", "Wayfair"],
+        "committees": ["Compensation"]
+      }
+    },
+    "auditor": {
+      "firm": "Ernst & Young LLP",
+      "tenure_years": 16,
+      "audit_fees_usd": 14600000,
+      "non_audit_fees_usd": 3100000
+    },
+    "executive_compensation": {
+      "ceo_pay_usd": 63209845,
+      "ceo_pay_ratio": 1447,
+      "pay_for_performance_aligned": true
+    },
+    "shareholder_proposals": {
+      "climate_lobbying": {
+        "topic": "climate-risk disclosure",
+        "proponent": "As You Sow",
+        "summary": "Requests an annual report on alignment of company lobbying with the goals of the Paris Agreement.",
+        "board_position": "AGAINST"
+      },
+      "independent_chair": {
+        "topic": "independent board chair",
+        "proponent": "John Chevedden",
+        "summary": "Requires the chair of the board to be an independent director.",
+        "board_position": "AGAINST"
+      }
+    }
+  }
+}

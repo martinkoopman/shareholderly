@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROXY-VOTER · TERMINAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap">
+  <style>
+    :root {
+      --bg: #0a0a08;
+      --bg-soft: #14140f;
+      --bg-row: #181812;
+      --amber: #FFB000;
+      --amber-soft: #C28000;
+      --teal: #00D9C0;
+      --teal-soft: #00897B;
+      --red: #FF4D4D;
+      --bone: #E8E6DC;
+      --muted: #6A6855;
+      --rule: #3A3A2E;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; background: var(--bg); color: var(--amber);
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 13px; line-height: 1.35;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* CRT scanlines */
+    body::before {
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:50;
+      background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,0,0,0.18) 3px);
+    }
+    /* Phosphor glow on text */
+    body::after {
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:51;
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.45) 100%);
+    }
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* STATUS BAR (top) */
+    .statusbar {
+      background: var(--amber); color: var(--bg);
+      padding: 5px 14px; display: flex; justify-content: space-between;
+      font-size: 11.5px; letter-spacing: 0.05em; font-weight: 600;
+    }
+    .statusbar .left { display: flex; gap: 24px; }
+    .statusbar .right { display: flex; gap: 24px; }
+    .blink { animation: blink 1.1s steps(2, end) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* HEADER BAR (under status) */
+    .head {
+      padding: 14px 20px 8px;
+      border-bottom: 1px solid var(--rule);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 32px;
+    }
+    .logo { font-size: 15px; font-weight: 700; letter-spacing: 0.08em; }
+    .logo .sq { display:inline-block; width: 11px; height: 11px; background: var(--amber); margin-right: 8px; vertical-align: -1px; }
+    .logo .sub { color: var(--teal); margin-left: 12px; font-weight: 500; }
+    .cmd {
+      background: var(--bg-soft); border: 1px solid var(--rule);
+      padding: 6px 12px; font-size: 12px; color: var(--bone);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cmd .prompt { color: var(--teal); }
+    .cmd .input { color: var(--bone); }
+    .cmd .cur { width: 7px; height: 13px; background: var(--amber); display: inline-block; vertical-align: -2px; }
+    .help { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+    .help b { color: var(--amber); font-weight: 600; }
+
+    /* MAIN BODY */
+    .main { flex: 1; display: grid; grid-template-columns: 230px 1fr; }
+
+    .sidebar {
+      border-right: 1px solid var(--rule);
+      padding: 14px 0;
+      background: linear-gradient(180deg, var(--bg) 0%, #08070a 100%);
+    }
+    .sidebar .sec {
+      padding: 6px 16px; color: var(--teal); font-size: 10.5px;
+      letter-spacing: 0.18em; font-weight: 600;
+    }
+    .sidebar .sec::before { content: "▸ "; }
+    .sidebar .fund {
+      display: block; width: 100%; text-align: left;
+      background: transparent; border: none;
+      color: var(--bone); font-family: inherit; font-size: 12.5px;
+      padding: 10px 16px; cursor: pointer;
+      border-left: 3px solid transparent;
+      position: relative;
+    }
+    .sidebar .fund:hover { background: var(--bg-row); color: var(--amber); }
+    .sidebar .fund.active { background: var(--bg-row); color: var(--amber); border-left-color: var(--amber); }
+    .sidebar .fund.active::after { content: "◂"; position: absolute; right: 10px; top: 10px; color: var(--amber); }
+    .sidebar .fund .id { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 2px; }
+    .sidebar .fund .nm { font-weight: 600; line-height: 1.25; }
+    .sidebar .fund .mt { font-size: 10px; color: var(--muted); margin-top: 4px; letter-spacing: 0.05em; }
+
+    .content { padding: 18px 24px; overflow: auto; }
+
+    /* TICKER STRIP — fake market data scroll */
+    .ticker {
+      display: flex; gap: 28px; padding: 6px 0;
+      border: 1px solid var(--rule);
+      background: var(--bg-soft);
+      font-size: 11px; color: var(--bone);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .ticker .item { white-space: nowrap; padding: 0 14px; border-right: 1px dashed var(--rule); }
+    .ticker .item:last-child { border-right: none; }
+    .up { color: var(--teal); }
+    .down { color: var(--red); }
+    .ticker .lbl { color: var(--amber); font-weight: 600; }
+
+    /* PAGE HEADING */
+    .ph {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 24px;
+      padding-bottom: 10px; border-bottom: 1px solid var(--amber);
+      margin-bottom: 14px;
+    }
+    .ph .l1 { font-size: 11px; color: var(--teal); letter-spacing: 0.16em; font-weight: 600; }
+    .ph h2 { margin: 4px 0 0; font-size: 22px; font-weight: 700; letter-spacing: 0.04em; color: var(--bone); }
+    .ph .meta { font-size: 10.5px; color: var(--muted); letter-spacing: 0.08em; text-align: right; line-height: 1.7; }
+    .ph .meta b { color: var(--amber); font-weight: 600; }
+
+    /* DATA GRID */
+    table.grid {
+      width: 100%; border-collapse: collapse;
+      font-size: 12px; font-variant-numeric: tabular-nums;
+    }
+    .grid thead th {
+      text-align: left; padding: 7px 10px; color: var(--teal);
+      font-weight: 600; letter-spacing: 0.1em; font-size: 10.5px;
+      border-top: 1px solid var(--amber); border-bottom: 1px solid var(--amber);
+      background: var(--bg-soft);
+    }
+    .grid thead th.r { text-align: right; }
+    .grid tbody td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--rule);
+      color: var(--bone);
+    }
+    .grid tbody td.r { text-align: right; }
+    .grid tbody td.tk { color: var(--amber); font-weight: 700; letter-spacing: 0.06em; }
+    .grid tbody tr.clickable { cursor: pointer; transition: background 100ms; }
+    .grid tbody tr.clickable:hover { background: rgba(255,176,0,0.08); }
+    .grid tbody tr.clickable:hover td { color: var(--amber); }
+    .grid tbody tr.muted td { color: var(--muted); }
+    .grid tbody tr.muted td.tk { color: var(--amber-soft); }
+    .grid tfoot td {
+      padding: 9px 10px; font-size: 11px; color: var(--teal);
+      border-top: 1px solid var(--amber); font-weight: 600;
+      background: var(--bg-soft);
+    }
+    .grid tfoot td.r { text-align: right; color: var(--bone); }
+
+    .stat {
+      display: inline-block; padding: 2px 7px; font-size: 10px;
+      font-weight: 700; letter-spacing: 0.12em;
+      border: 1px solid currentColor;
+    }
+    .stat.av { color: var(--teal); }
+    .stat.un { color: var(--red); }
+
+    /* INFO BLOCKS */
+    .infogrid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--rule);
+      border: 1px solid var(--rule); margin-bottom: 16px;
+    }
+    .infocell { background: var(--bg-soft); padding: 12px 14px; }
+    .infocell .l { font-size: 10px; color: var(--teal); letter-spacing: 0.12em; font-weight: 600; }
+    .infocell .v { font-size: 19px; color: var(--amber); margin-top: 4px; font-weight: 600; letter-spacing: 0.02em; }
+    .infocell .v .sml { font-size: 12px; color: var(--bone); font-weight: 400; letter-spacing: 0.05em; }
+
+    /* FUNCTION KEY STRIP (bottom) */
+    .fkeys {
+      display: flex; border-top: 1px solid var(--rule);
+      background: var(--bg-soft); font-size: 10.5px;
+    }
+    .fkey {
+      flex: 1; padding: 8px 12px; border-right: 1px solid var(--rule);
+      color: var(--bone); letter-spacing: 0.08em;
+    }
+    .fkey:last-child { border-right: none; }
+    .fkey b { color: var(--amber); font-weight: 700; margin-right: 6px; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="statusbar">
+    <div class="left">
+      <span>● ONLINE</span>
+      <span>USER: M.KOOPMAN</span>
+      <span>SESS: 0x4F2A</span>
+      <span>LATENCY 12ms</span>
+    </div>
+    <div class="right">
+      <span>MON 25 MAY 2026</span>
+      <span class="blink">09:24:51 ET</span>
+      <span>NYSE OPEN · 16 min</span>
+    </div>
+  </div>
+
+  <div class="head">
+    <div class="logo">
+      <span class="sq"></span>PROXY-VOTER<span class="sub">v0.3.2</span>
+    </div>
+    <div class="cmd">
+      <span class="prompt">&gt;</span>
+      <span class="input">load fund ACME-EQ --positions --proxies</span>
+      <span class="cur blink"></span>
+    </div>
+    <div class="help">
+      <b>F1</b> HELP · <b>F2</b> CMD · <b>F4</b> EXPORT
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="sidebar">
+      <div class="sec">FUNDS · 2</div>
+      <button class="fund active">
+        <div class="id">ACME-EQ · HF</div>
+        <div class="nm">Acme Equity Long/Short</div>
+        <div class="mt">AUM $2.40 B · 5 POS</div>
+      </button>
+      <button class="fund">
+        <div class="id">ACME-PEN · PF</div>
+        <div class="nm">Acme Municipal Pension</div>
+        <div class="mt">AUM $18.50 B · 22 POS</div>
+      </button>
+      <div class="sec" style="margin-top:18px">UTILITIES</div>
+      <button class="fund">
+        <div class="id">POLICY</div>
+        <div class="nm">Voting Policy</div>
+        <div class="mt">RULES · v2.1</div>
+      </button>
+      <button class="fund">
+        <div class="id">EDGAR</div>
+        <div class="nm">EDGAR Wire</div>
+        <div class="mt">SUB · 10/SEC</div>
+      </button>
+    </div>
+
+    <div class="content">
+
+      <div class="ticker">
+        <div class="item"><span class="lbl">AAPL</span> 205.18 <span class="up">+1.42</span></div>
+        <div class="item"><span class="lbl">MSFT</span> 425.00 <span class="up">+0.88</span></div>
+        <div class="item"><span class="lbl">NVDA</span> 1,372.45 <span class="down">−12.30</span></div>
+        <div class="item"><span class="lbl">XOM</span> 116.00 <span class="up">+0.21</span></div>
+        <div class="item"><span class="lbl">JPM</span> 203.16 <span class="down">−0.45</span></div>
+        <div class="item"><span class="lbl">SPX</span> 6,180.22 <span class="up">+0.14%</span></div>
+        <div class="item"><span class="lbl">VIX</span> 13.84 <span class="down">−2.10%</span></div>
+      </div>
+
+      <div class="ph">
+        <div>
+          <div class="l1">▸ HOLDINGS REGISTER</div>
+          <h2>ACME-EQ — ACME EQUITY LONG/SHORT</h2>
+        </div>
+        <div class="meta">
+          AUM <b>$2.40 B</b><br>
+          POSITIONS <b>5</b><br>
+          PROXY COVERAGE <b>60%</b>
+        </div>
+      </div>
+
+      <div class="infogrid">
+        <div class="infocell"><div class="l">LONG VALUE</div><div class="v">$141.4<span class="sml">M</span></div></div>
+        <div class="infocell"><div class="l">ON FILE</div><div class="v">3<span class="sml"> / 5</span></div></div>
+        <div class="infocell"><div class="l">AWAITING</div><div class="v" style="color:var(--red)">2<span class="sml"> / 5</span></div></div>
+        <div class="infocell"><div class="l">VOTE WINDOW</div><div class="v" style="color:var(--teal)">34<span class="sml"> DAYS</span></div></div>
+      </div>
+
+      <table class="grid">
+        <thead>
+          <tr>
+            <th style="width:30px">#</th>
+            <th style="width:75px">TICKER</th>
+            <th>COMPANY</th>
+            <th style="width:80px">CIK</th>
+            <th class="r" style="width:100px">SHARES</th>
+            <th class="r" style="width:130px">POSITION USD</th>
+            <th class="r" style="width:110px">PROXY</th>
+            <th class="r" style="width:100px">ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="clickable">
+            <td>01</td><td class="tk">AAPL</td><td>Apple Inc.</td>
+            <td>320193</td>
+            <td class="r">120,000</td><td class="r">24,600,000</td>
+            <td class="r"><span class="stat av">ON FILE</span></td>
+            <td class="r">▸ OPEN</td>
+          </tr>
+          <tr class="clickable">
+            <td>02</td><td class="tk">MSFT</td><td>Microsoft Corporation</td>
+            <td>789019</td>
+            <td class="r">85,000</td><td class="r">36,125,000</td>
+            <td class="r"><span class="stat av">ON FILE</span></td>
+            <td class="r">▸ OPEN</td>
+          </tr>
+          <tr class="clickable">
+            <td>03</td><td class="tk">NVDA</td><td>NVIDIA Corporation</td>
+            <td>1045810</td>
+            <td class="r">18,500</td><td class="r">25,400,000</td>
+            <td class="r"><span class="stat av">ON FILE</span></td>
+            <td class="r">▸ OPEN</td>
+          </tr>
+          <tr class="muted">
+            <td>04</td><td class="tk">XOM</td><td>Exxon Mobil Corporation</td>
+            <td>34088</td>
+            <td class="r">310,000</td><td class="r">35,960,000</td>
+            <td class="r"><span class="stat un">AWAITING</span></td>
+            <td class="r">↓ FETCH</td>
+          </tr>
+          <tr class="muted">
+            <td>05</td><td class="tk">JPM</td><td>JPMorgan Chase &amp; Co.</td>
+            <td>19617</td>
+            <td class="r">95,000</td><td class="r">19,300,000</td>
+            <td class="r"><span class="stat un">AWAITING</span></td>
+            <td class="r">↓ FETCH</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4">TOTAL · 5 POSITIONS</td>
+            <td class="r">628,500</td>
+            <td class="r">141,385,000</td>
+            <td colspan="2" class="r">— —</td>
+          </tr>
+        </tfoot>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="fkeys">
+    <div class="fkey"><b>F1</b>HELP</div>
+    <div class="fkey"><b>F2</b>OPEN BALLOT</div>
+    <div class="fkey"><b>F3</b>REFRESH EDGAR</div>
+    <div class="fkey"><b>F4</b>EXPORT CSV</div>
+    <div class="fkey"><b>F5</b>POLICY</div>
+    <div class="fkey"><b>F6</b>AUDIT LOG</div>
+    <div class="fkey"><b>F9</b>FILTER</div>
+    <div class="fkey"><b>F10</b>QUIT</div>
+  </div>
+
+</div>
+</body>
+</html>

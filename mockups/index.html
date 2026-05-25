@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proxy Voter — Design Mockups</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=JetBrains+Mono:wght@400;600&display=swap">
+  <style>
+    :root { --ink: #1a1814; --paper: #f4f0e6; --rule: #b8a988; --accent: #8a2a1c; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Fraunces", Georgia, serif; }
+    body { padding: 64px 48px 80px; max-width: 1200px; margin: 0 auto; }
+    h1 {
+      font-family: "Fraunces", serif;
+      font-variation-settings: "opsz" 144;
+      font-style: italic; font-weight: 500;
+      font-size: clamp(46px, 6vw, 76px);
+      line-height: 0.95; letter-spacing: -0.025em;
+      margin: 0 0 12px;
+    }
+    .lede { font-size: 19px; line-height: 1.5; color: #4a4338; max-width: 60ch; margin: 0 0 48px; font-style: italic; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+    a.card {
+      display: block; text-decoration: none; color: inherit;
+      border: 1px solid var(--rule); padding: 28px 28px 24px;
+      background: #fbf8ef;
+      transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+      position: relative;
+    }
+    a.card:hover { transform: translateY(-3px); box-shadow: 6px 8px 0 var(--ink); border-color: var(--ink); }
+    .num { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: 0.12em; color: #6e6660; }
+    .name { font-family: "Fraunces", serif; font-style: italic; font-size: 32px; margin: 8px 0 6px; line-height: 1.05; letter-spacing: -0.015em; }
+    .tag { font-family: "JetBrains Mono", monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+    .desc { font-size: 15.5px; line-height: 1.55; margin: 14px 0 0; color: #4a4338; }
+    .swatches { display: flex; gap: 6px; margin-top: 18px; }
+    .swatches span { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+    .open { font-family: "Fraunces", serif; font-style: italic; font-size: 14px; color: var(--accent); margin-top: 14px; display: block; }
+    .open::after { content: " →"; }
+    .foot { margin-top: 48px; font-size: 13px; color: #6e6660; font-style: italic; }
+  </style>
+</head>
+<body>
+  <h1>Five mockups<span style="color:#b8a988">.</span></h1>
+  <p class="lede">Each is a complete take on the home page using the same sample fund and the same five positions. Open each, look at it for thirty seconds, then pick the direction that feels right — or tell me which two to crossbreed.</p>
+
+  <div class="grid">
+    <a class="card" href="01-proxy-gazette.html">
+      <div class="num">01 / 05</div>
+      <div class="name">The Proxy Gazette</div>
+      <div class="tag">Editorial · Newspaper</div>
+      <p class="desc">Cream paper, ink-black serifs, hairline rules, Roman-numeral marginalia. Reads like a financial broadsheet. Gravitas, considered, literary.</p>
+      <div class="swatches">
+        <span style="background:#f3eee1"></span>
+        <span style="background:#15140f"></span>
+        <span style="background:#8a2a1c"></span>
+        <span style="background:#2c5e3f"></span>
+        <span style="background:#b07e12"></span>
+      </div>
+      <span class="open">Open</span>
+    </a>
+
+    <a class="card" href="02-terminal-86.html">
+      <div class="num">02 / 05</div>
+      <div class="name">Terminal '86</div>
+      <div class="tag">Trading Terminal · Dense</div>
+      <p class="desc">Phosphor-amber on near-black, dense monospaced grid, CRT scanlines, function-key strip. The hedge-fund desk in 1986, sharpened.</p>
+      <div class="swatches">
+        <span style="background:#0a0a08"></span>
+        <span style="background:#ffb000"></span>
+        <span style="background:#00d9c0"></span>
+        <span style="background:#ff4d4d"></span>
+        <span style="background:#e8e6dc"></span>
+      </div>
+      <span class="open">Open</span>
+    </a>
+
+    <a class="card" href="03-swiss-federal.html">
+      <div class="num">03 / 05</div>
+      <div class="name">Swiss Federal</div>
+      <div class="tag">Brutalist · Authoritative</div>
+      <p class="desc">Strict black/white grid, signal-red accents, oversized sans-serif display. Reads like a public record. Hard-edged precision.</p>
+      <div class="swatches">
+        <span style="background:#ffffff;border:1px solid #ccc"></span>
+        <span style="background:#000000"></span>
+        <span style="background:#e63329"></span>
+        <span style="background:#f4f4f4"></span>
+        <span style="background:#888"></span>
+      </div>
+      <span class="open">Open</span>
+    </a>
+
+    <a class="card" href="04-modernist-calm.html">
+      <div class="num">04 / 05</div>
+      <div class="name">Modernist Calm</div>
+      <div class="tag">Premium SaaS · Quiet</div>
+      <p class="desc">Generous whitespace, Instrument Serif italic for display, modern grotesque body. Sage-green accent. Calm, premium, contemporary.</p>
+      <div class="swatches">
+        <span style="background:#f7f4ed"></span>
+        <span style="background:#181614"></span>
+        <span style="background:#5f7a5d"></span>
+        <span style="background:#c97b5c"></span>
+        <span style="background:#e8e3d8"></span>
+      </div>
+      <span class="open">Open</span>
+    </a>
+
+    <a class="card" href="05-after-hours.html">
+      <div class="num">05 / 05</div>
+      <div class="name">After-Hours</div>
+      <div class="tag">Private Bank · Evening</div>
+      <p class="desc">Midnight navy, warm gold, bone white, classical serif. The private-wealth desk at 9 p.m. Restrained, sophisticated, premium.</p>
+      <div class="swatches">
+        <span style="background:#0e1a2b"></span>
+        <span style="background:#c9a875"></span>
+        <span style="background:#efe8d8"></span>
+        <span style="background:#1e4d5e"></span>
+        <span style="background:#7d6242"></span>
+      </div>
+      <span class="open">Open</span>
+    </a>
+  </div>
+
+  <p class="foot">When you've picked, tell me the number (or two numbers to mix). I'll wire that aesthetic into the running React app and delete the others.</p>
+</body>
+</html>

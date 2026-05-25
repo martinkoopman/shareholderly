@@ -1,0 +1,91 @@
+{
+  "ticker": "XOM",
+  "company_name": "Exxon Mobil Corporation",
+  "meeting_date": "2026-05-28",
+  "proxy_statement_url": "https://corporate.exxonmobil.com/investors",
+  "ballot": [
+    {
+      "item_id": "1a",
+      "type": "director_election",
+      "title": "Election of Director: Darren W. Woods",
+      "subject_key": "Darren W. Woods",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "1b",
+      "type": "director_election",
+      "title": "Election of Director: Michael J. Angelakis",
+      "subject_key": "Michael J. Angelakis",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "2",
+      "type": "auditor_ratification",
+      "title": "Ratification of PricewaterhouseCoopers LLP as independent auditor",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "3",
+      "type": "say_on_pay",
+      "title": "Advisory vote to approve executive compensation",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "4",
+      "type": "shareholder_environmental",
+      "title": "Shareholder Proposal: Report on Scope 3 emissions reduction targets",
+      "subject_key": "scope3_targets",
+      "board_recommendation": "AGAINST"
+    },
+    {
+      "item_id": "5",
+      "type": "shareholder_governance",
+      "title": "Shareholder Proposal: Lower threshold to call a special meeting to 10%",
+      "subject_key": "special_meeting_10pct",
+      "board_recommendation": "AGAINST"
+    }
+  ],
+  "statement_data": {
+    "directors": {
+      "Darren W. Woods": {
+        "independent": false,
+        "tenure_years": 9,
+        "attendance_pct": 100,
+        "other_public_boards": [],
+        "committees": []
+      },
+      "Michael J. Angelakis": {
+        "independent": true,
+        "tenure_years": 4,
+        "attendance_pct": 70,
+        "other_public_boards": ["Atlantic Broadband"],
+        "committees": ["Audit"]
+      }
+    },
+    "auditor": {
+      "firm": "PricewaterhouseCoopers LLP",
+      "tenure_years": 92,
+      "audit_fees_usd": 35400000,
+      "non_audit_fees_usd": 4100000
+    },
+    "executive_compensation": {
+      "ceo_pay_usd": 36900000,
+      "ceo_pay_ratio": 191,
+      "pay_for_performance_aligned": true
+    },
+    "shareholder_proposals": {
+      "scope3_targets": {
+        "topic": "climate-risk disclosure",
+        "proponent": "Follow This",
+        "summary": "Requests the company set medium-term Scope 3 emissions reduction targets aligned with the Paris Agreement.",
+        "board_position": "AGAINST"
+      },
+      "special_meeting_10pct": {
+        "topic": "special meeting threshold",
+        "proponent": "John Chevedden",
+        "summary": "Lowers the threshold for shareholders to call a special meeting from 25% to 10%.",
+        "board_position": "AGAINST"
+      }
+    }
+  }
+}

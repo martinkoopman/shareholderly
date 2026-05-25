@@ -1,0 +1,74 @@
+{
+  "ticker": "MSFT",
+  "company_name": "Microsoft Corporation",
+  "meeting_date": "2026-12-02",
+  "proxy_statement_url": "https://www.microsoft.com/en-us/Investor/sec-filings.aspx",
+  "ballot": [
+    {
+      "item_id": "1a",
+      "type": "director_election",
+      "title": "Election of Director: Satya Nadella",
+      "subject_key": "Satya Nadella",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "1b",
+      "type": "director_election",
+      "title": "Election of Director: Reid Hoffman",
+      "subject_key": "Reid Hoffman",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "2",
+      "type": "auditor_ratification",
+      "title": "Ratification of Deloitte & Touche LLP as independent auditor",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "3",
+      "type": "say_on_pay",
+      "title": "Advisory vote to approve executive compensation",
+      "board_recommendation": "FOR"
+    },
+    {
+      "item_id": "4",
+      "type": "equity_plan",
+      "title": "Approval of amendments to the 2017 Stock Plan",
+      "board_recommendation": "FOR"
+    }
+  ],
+  "statement_data": {
+    "directors": {
+      "Satya Nadella": {
+        "independent": false,
+        "tenure_years": 12,
+        "attendance_pct": 100,
+        "other_public_boards": [],
+        "committees": []
+      },
+      "Reid Hoffman": {
+        "independent": true,
+        "tenure_years": 9,
+        "attendance_pct": 92,
+        "other_public_boards": [],
+        "committees": ["Compensation"]
+      }
+    },
+    "auditor": {
+      "firm": "Deloitte & Touche LLP",
+      "tenure_years": 42,
+      "audit_fees_usd": 79500000,
+      "non_audit_fees_usd": 8200000
+    },
+    "executive_compensation": {
+      "ceo_pay_usd": 79100000,
+      "ceo_pay_ratio": 289,
+      "pay_for_performance_aligned": true
+    },
+    "equity_plan": {
+      "expected_dilution_pct": 6.4,
+      "three_year_avg_burn_rate_pct": 1.1
+    },
+    "shareholder_proposals": {}
+  }
+}

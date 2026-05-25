@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Proxy Gazette</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <style>
+    :root {
+      --paper: #F3EEE1;
+      --paper-deep: #E9E1CB;
+      --ink: #15140F;
+      --ink-soft: #463F35;
+      --ink-mute: #7A6F60;
+      --rule: #B8A988;
+      --rule-soft: #D6C9AA;
+      --for: #2C5E3F;
+      --against: #8A2A1C;
+      --abstain: #B07E12;
+      --display: "Fraunces", serif;
+      --body: "Newsreader", Georgia, serif;
+      --mono: "JetBrains Mono", monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; background: var(--paper); color: var(--ink);
+      font-family: var(--body); font-size: 16px; line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "kern","liga","onum","pnum";
+    }
+    body::before {
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-image:
+        radial-gradient(circle at 25% 15%, rgba(120,100,60,0.05) 0, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(120,100,60,0.04) 0, transparent 50%);
+    }
+    body::after {
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+      opacity:0.5; mix-blend-mode:multiply;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.08  0 0 0 0 0.06  0 0 0 0 0.04  0 0 0 0.045 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    }
+    .page { position:relative; z-index:1; max-width:1320px; margin:0 auto; padding:0 36px 80px; }
+
+    /* MASTHEAD */
+    .masthead {
+      padding:28px 0 16px; border-bottom:2.5px solid var(--ink);
+      display:grid; grid-template-columns:1fr auto 1fr; align-items:end; gap:24px;
+    }
+    .masthead .l, .masthead .r {
+      font-family: var(--display); font-size:11px; letter-spacing:0.18em;
+      text-transform:uppercase; color:var(--ink-soft); line-height:1.4;
+    }
+    .masthead .r { text-align:right; }
+    .masthead h1 {
+      margin:0; text-align:center;
+      font-family: var(--display);
+      font-variation-settings:"opsz" 144, "SOFT" 40, "wght" 500;
+      font-size:clamp(40px,5.5vw,64px); line-height:0.85; letter-spacing:-0.02em;
+      font-style:italic;
+    }
+    .masthead h1 .o { display:inline-block; margin:0 8px; font-style:normal; font-size:0.55em; vertical-align:0.18em; color:var(--ink-mute); }
+    .subhead {
+      display:grid; grid-template-columns:1fr auto 1fr;
+      padding:8px 0 14px; border-bottom:1px solid var(--rule);
+      font-family: var(--display); font-size:11px; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--ink-mute);
+    }
+    .subhead .c { text-align:center; font-style:italic; letter-spacing:0.08em; text-transform:none; color:var(--ink-soft); }
+    .subhead .r { text-align:right; }
+
+    /* LAYOUT */
+    .spread { display:grid; grid-template-columns:240px 1fr; gap:56px; padding-top:32px; }
+
+    /* CONTENTS COLUMN */
+    .col-h2 {
+      font-family:var(--display); font-size:11px; font-weight:700;
+      letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-soft);
+      margin:0 0 14px; padding-bottom:8px; border-bottom:1px solid var(--rule-soft);
+    }
+    .col-h2 + .col-h2 { margin-top:36px; }
+    aside { border-right:1px solid var(--rule); padding-right:28px; }
+    .fund {
+      display:block; width:100%; text-align:left; background:transparent; border:none;
+      padding:10px 0 12px; border-top:1px solid var(--rule-soft); color:var(--ink);
+      cursor:pointer; transition:padding-left 200ms ease, color 200ms ease;
+      font-family:inherit; position:relative;
+    }
+    .fund:first-of-type { border-top:none; padding-top:4px; }
+    .fund:hover { padding-left:6px; color:var(--against); }
+    .fund .ro {
+      font-family:var(--display); font-style:italic; font-size:11px;
+      color:var(--ink-mute); letter-spacing:0.04em; margin-right:6px;
+    }
+    .fund .nm { font-family:var(--display); font-size:18px; font-weight:500; line-height:1.15; letter-spacing:-0.01em; }
+    .fund.active .nm { font-style:italic; text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1px; }
+    .fund.active::before {
+      content:"❦"; position:absolute; left:-16px; top:12px;
+      color:var(--against); font-size:11px;
+    }
+    .fund .mt {
+      font-family:var(--mono); font-size:10.5px; letter-spacing:0.04em;
+      color:var(--ink-mute); margin-top:4px; text-transform:uppercase;
+    }
+
+    /* MAIN */
+    .dek-block { display:grid; grid-template-columns:1fr auto; align-items:end; gap:24px; border-bottom:1px solid var(--rule); padding-bottom:18px; }
+    .kicker { font-family:var(--display); font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--against); margin-bottom:14px; }
+    .head {
+      font-family:var(--display); font-variation-settings:"opsz" 144,"SOFT" 25;
+      font-weight:500; font-size:clamp(34px,4vw,52px); line-height:0.95;
+      letter-spacing:-0.025em; margin:0;
+    }
+    .head .amp { font-style:italic; font-weight:400; color:var(--ink-mute); }
+    .dek { font-family:var(--body); font-style:italic; font-size:17px; color:var(--ink-soft); line-height:1.45; max-width:56ch; margin:14px 0 0; }
+    .byline {
+      font-family:var(--mono); font-size:10.5px; letter-spacing:0.08em;
+      text-transform:uppercase; color:var(--ink-mute); text-align:right;
+      line-height:1.7; white-space:nowrap;
+    }
+
+    /* LEDGER */
+    .ledger { margin-top:28px; border-top:2px solid var(--ink); border-bottom:2px solid var(--ink); }
+    .row {
+      display:grid; grid-template-columns:36px 90px 1fr 130px 150px 150px;
+      align-items:baseline; padding:16px 0; gap:12px;
+      border-bottom:1px solid var(--rule-soft);
+      cursor:pointer; transition:background 180ms ease; position:relative;
+    }
+    .row:last-child { border-bottom:none; }
+    .row.h { cursor:default; padding:10px 0; border-bottom:1px solid var(--rule); }
+    .row.h > * { font-family:var(--display) !important; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-soft); }
+    .row.clickable:hover { background:var(--paper-deep); }
+    .row.muted { opacity:0.55; cursor:default; }
+    .row.muted:hover { background:transparent; }
+    .row .ro { font-family:var(--display); font-style:italic; color:var(--ink-mute); font-size:14px; text-align:right; }
+    .row .tk { font-family:var(--mono); font-size:15px; font-weight:600; letter-spacing:0.04em; }
+    .row .cm { font-family:var(--display); font-size:18px; font-weight:500; letter-spacing:-0.01em; line-height:1.2; }
+    .row .num { font-family:var(--mono); font-size:14px; text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-soft); }
+    .row .bd { text-align:right; }
+    .tag {
+      display:inline-block; font-family:var(--display); font-size:10.5px;
+      letter-spacing:0.16em; text-transform:uppercase; padding:4px 9px;
+      border:0.75px solid currentColor;
+    }
+    .tag.av { color:var(--for); }
+    .tag.un { color:var(--ink-mute); border-style:dashed; }
+    .foot { margin-top:14px; padding-top:12px; border-top:1px dashed var(--rule); font-family:var(--body); font-style:italic; font-size:13px; color:var(--ink-mute); text-align:right; }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="masthead">
+    <div class="l">Vol. I · No. 25<br>Acme Capital · Stewardship Office</div>
+    <h1>The <span class="o">❦</span> Proxy <span class="o">❦</span> Gazette</h1>
+    <div class="r">Monday, May 25, 2026<br>Price · Twelve Basis Points</div>
+  </header>
+  <div class="subhead">
+    <div>Established MMXXVI</div>
+    <div class="c">All the vote that's fit to cast</div>
+    <div class="r">Fiduciary Edition</div>
+  </div>
+
+  <div class="spread">
+    <aside>
+      <h2 class="col-h2">Funds Under Coverage</h2>
+      <button class="fund active">
+        <span class="ro">I.</span><span class="nm">Acme Equity Long/Short</span>
+        <div class="mt">hedge fund · $2.4B AUM</div>
+      </button>
+      <button class="fund">
+        <span class="ro">II.</span><span class="nm">Acme Municipal Pension Trust</span>
+        <div class="mt">pension fund · $18.5B AUM</div>
+      </button>
+      <h2 class="col-h2">Reference Desk</h2>
+      <button class="fund">
+        <span class="ro">§</span><span class="nm">Voting Policy</span>
+        <div class="mt">the book of rules</div>
+      </button>
+    </aside>
+
+    <main>
+      <div class="dek-block">
+        <div>
+          <div class="kicker">Portfolio Stewardship · Holdings Register</div>
+          <h2 class="head">Acme Equity <span class="amp">&</span> Long/Short</h2>
+          <p class="dek">Holdings on the books at last close. Each line carries a vote; each vote, a record. Choose a position to read the meeting card.</p>
+        </div>
+        <div class="byline">Fund · ACME-EQ<br>hedge fund<br>$2.4B AUM</div>
+      </div>
+
+      <div class="ledger">
+        <div class="row h">
+          <span></span><span>Ticker</span><span>Company</span>
+          <span style="text-align:right">Shares</span>
+          <span style="text-align:right">Position</span>
+          <span style="text-align:right">Filing</span>
+        </div>
+        <div class="row clickable">
+          <span class="ro">i</span><span class="tk">AAPL</span>
+          <span class="cm">Apple Inc.</span>
+          <span class="num">120,000</span>
+          <span class="num">$24,600,000</span>
+          <span class="bd"><span class="tag av">On file</span></span>
+        </div>
+        <div class="row clickable">
+          <span class="ro">ii</span><span class="tk">MSFT</span>
+          <span class="cm">Microsoft Corporation</span>
+          <span class="num">85,000</span>
+          <span class="num">$36,125,000</span>
+          <span class="bd"><span class="tag av">On file</span></span>
+        </div>
+        <div class="row clickable">
+          <span class="ro">iii</span><span class="tk">NVDA</span>
+          <span class="cm">NVIDIA Corporation</span>
+          <span class="num">18,500</span>
+          <span class="num">$25,400,000</span>
+          <span class="bd"><span class="tag av">On file</span></span>
+        </div>
+        <div class="row muted">
+          <span class="ro">iv</span><span class="tk">XOM</span>
+          <span class="cm">Exxon Mobil Corporation</span>
+          <span class="num">310,000</span>
+          <span class="num">$35,960,000</span>
+          <span class="bd"><span class="tag un">Awaiting</span></span>
+        </div>
+        <div class="row muted">
+          <span class="ro">v</span><span class="tk">JPM</span>
+          <span class="cm">JPMorgan Chase &amp; Co.</span>
+          <span class="num">95,000</span>
+          <span class="num">$19,300,000</span>
+          <span class="bd"><span class="tag un">Awaiting</span></span>
+        </div>
+        <div class="foot">5 positions of record. Click any line bearing a filing to read its meeting card.</div>
+      </div>
+    </main>
+  </div>
+</div>
+</body>
+</html>

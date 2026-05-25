@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proxy · Modernist Calm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Onest:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --paper: #F7F4ED;
+      --paper-2: #EFEAE0;
+      --card: #FBF9F3;
+      --ink: #181614;
+      --ink-soft: #4A4540;
+      --mute: #8E8678;
+      --rule: #DAD2C0;
+      --sage: #5F7A5D;
+      --sage-wash: #DDE3D7;
+      --clay: #C97B5C;
+      --clay-wash: #EFD9CC;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; background: var(--paper); color: var(--ink);
+      font-family: "Onest", -apple-system, sans-serif;
+      font-size: 15px; line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "ss01","ss03","cv11";
+    }
+    button { font-family: inherit; cursor: pointer; }
+
+    .shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 40px 80px;
+    }
+
+    /* TOP NAV — minimal */
+    .topnav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .brand .mark {
+      width: 32px; height: 32px;
+      background: var(--ink); color: var(--paper);
+      display: grid; place-items: center;
+      font-family: "Instrument Serif", serif;
+      font-style: italic; font-size: 22px; line-height: 1;
+      border-radius: 50%;
+    }
+    .brand .wordmark {
+      font-family: "Instrument Serif", serif;
+      font-style: italic; font-size: 22px;
+      letter-spacing: -0.01em;
+    }
+    .brand .wordmark .lt { color: var(--mute); }
+
+    .topnav-right {
+      display: flex; align-items: center; gap: 20px;
+      font-size: 13px; color: var(--ink-soft);
+    }
+    .topnav-right .pill {
+      padding: 6px 12px; background: var(--card); border: 1px solid var(--rule);
+      border-radius: 999px; font-size: 12px; letter-spacing: 0.02em;
+    }
+    .topnav-right .pill b { color: var(--sage); }
+    .topnav-right .who {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--sage); color: var(--paper);
+      display: grid; place-items: center; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      padding: 64px 0 48px;
+      display: grid; grid-template-columns: 1.4fr 1fr;
+      gap: 80px; align-items: end;
+    }
+    .hero .eyebrow {
+      font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--sage); font-weight: 600; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero .eyebrow::before {
+      content: ""; width: 22px; height: 1px; background: var(--sage);
+    }
+    .hero h1 {
+      font-family: "Instrument Serif", serif;
+      font-weight: 400;
+      font-size: clamp(54px, 6.4vw, 86px);
+      line-height: 0.96;
+      letter-spacing: -0.022em;
+      margin: 0;
+    }
+    .hero h1 .it { font-style: italic; color: var(--clay); }
+    .hero h1 .small { font-size: 0.5em; color: var(--mute); display: block; margin-top: 18px; font-style: italic; letter-spacing: -0.01em; }
+
+    .hero .summary {
+      padding: 22px 24px;
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.02), 0 8px 28px rgba(60,40,20,0.04);
+    }
+    .hero .summary .lbl {
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mute); font-weight: 600;
+    }
+    .hero .summary .stack {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 18px 20px; margin-top: 14px;
+    }
+    .hero .summary .num {
+      font-family: "Instrument Serif", serif;
+      font-size: 38px; line-height: 1; letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .hero .summary .num.accent { color: var(--sage); font-style: italic; }
+    .hero .summary .cap { font-size: 12px; color: var(--mute); }
+
+    /* TWO COLUMN: FUNDS PANEL + HOLDINGS LIST */
+    .layout {
+      display: grid; grid-template-columns: 280px 1fr;
+      gap: 32px; align-items: start;
+    }
+
+    .funds-panel {
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      padding: 22px 18px 18px;
+      position: sticky; top: 28px;
+    }
+    .funds-panel .ph {
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--mute); font-weight: 600;
+      padding: 0 6px 12px; border-bottom: 1px solid var(--rule);
+    }
+    .fund-card {
+      display: block; width: 100%; text-align: left;
+      background: transparent; border: none;
+      padding: 14px 8px 14px 14px;
+      border-radius: 10px;
+      cursor: pointer; transition: background 180ms ease;
+      position: relative;
+      margin-top: 6px;
+      font-family: inherit;
+      color: var(--ink);
+    }
+    .fund-card:hover { background: var(--paper-2); }
+    .fund-card.active {
+      background: var(--ink); color: var(--paper);
+    }
+    .fund-card .row1 {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .fund-card .dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .fund-card.f1 .dot { background: var(--sage); }
+    .fund-card.f2 .dot { background: var(--clay); }
+    .fund-card .nm {
+      font-family: "Instrument Serif", serif; font-style: italic;
+      font-size: 19px; line-height: 1.1; letter-spacing: -0.01em;
+    }
+    .fund-card .mt {
+      font-size: 12px; color: var(--mute); margin: 8px 0 0 18px;
+      letter-spacing: 0.01em;
+    }
+    .fund-card.active .mt { color: rgba(247,244,237,0.65); }
+
+    .funds-panel .divider {
+      height: 1px; background: var(--rule); margin: 18px 6px 12px;
+    }
+
+    .panel-link {
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%; background: transparent; border: none;
+      padding: 10px 8px 10px 14px; cursor: pointer; border-radius: 10px;
+      font-family: inherit; color: var(--ink-soft); font-size: 14px;
+      text-align: left;
+    }
+    .panel-link:hover { background: var(--paper-2); color: var(--ink); }
+    .panel-link .arr { color: var(--mute); }
+
+    /* HOLDINGS CARDS */
+    .h-head {
+      display: flex; justify-content: space-between; align-items: end;
+      margin-bottom: 18px;
+    }
+    .h-head h2 {
+      font-family: "Instrument Serif", serif;
+      font-style: italic; font-weight: 400;
+      font-size: 32px; letter-spacing: -0.018em;
+      margin: 0;
+    }
+    .h-head .sub {
+      font-size: 13px; color: var(--mute);
+    }
+
+    .holdings { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .hcard {
+      background: var(--card); border: 1px solid var(--rule);
+      border-radius: 14px;
+      padding: 20px 22px;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      display: grid; grid-template-columns: 1fr auto; gap: 16px;
+      align-items: start;
+      position: relative; overflow: hidden;
+    }
+    .hcard::after {
+      content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--sage); opacity: 0;
+      transition: opacity 180ms;
+    }
+    .hcard:hover {
+      transform: translateY(-2px);
+      border-color: var(--ink);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.02), 0 14px 32px rgba(60,40,20,0.06);
+    }
+    .hcard:hover::after { opacity: 1; }
+    .hcard.muted { opacity: 0.62; cursor: not-allowed; }
+    .hcard.muted:hover { transform: none; border-color: var(--rule); box-shadow: none; }
+    .hcard.muted::after { display: none; }
+
+    .hcard .tk {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px; letter-spacing: 0.08em; font-weight: 500;
+      color: var(--mute);
+    }
+    .hcard .nm {
+      font-family: "Instrument Serif", serif;
+      font-size: 24px; line-height: 1.1;
+      letter-spacing: -0.015em;
+      margin: 4px 0 14px;
+    }
+    .hcard .row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .hcard .row .l {
+      font-size: 11px; color: var(--mute); letter-spacing: 0.05em;
+      text-transform: uppercase; margin-bottom: 4px;
+    }
+    .hcard .row .v {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 16px; font-variant-numeric: tabular-nums;
+      letter-spacing: -0.01em;
+    }
+    .hcard .row .v.acc { color: var(--sage); }
+
+    .hcard .right {
+      display: flex; flex-direction: column;
+      align-items: end; gap: 10px;
+    }
+    .pill {
+      padding: 4px 10px; border-radius: 999px;
+      font-size: 11px; letter-spacing: 0.04em; font-weight: 500;
+    }
+    .pill.av { background: var(--sage-wash); color: var(--sage); }
+    .pill.un { background: var(--paper-2); color: var(--mute); }
+    .hcard .arrow {
+      font-family: "Instrument Serif", serif; font-style: italic;
+      font-size: 14px; color: var(--ink-soft);
+      opacity: 0; transition: opacity 180ms;
+    }
+    .hcard:hover .arrow { opacity: 1; }
+
+    .h-foot {
+      margin-top: 24px;
+      padding: 18px 22px;
+      background: var(--paper-2);
+      border-radius: 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; color: var(--ink-soft);
+    }
+    .h-foot b { font-family: "Instrument Serif", serif; font-style: italic; font-size: 16px; color: var(--ink); }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+  <nav class="topnav">
+    <div class="brand">
+      <span class="mark">P</span>
+      <span class="wordmark">proxy<span class="lt">.</span><i>voter</i></span>
+    </div>
+    <div class="topnav-right">
+      <span class="pill">EDGAR <b>connected</b></span>
+      <span>Mon, May 25</span>
+      <span class="who">MK</span>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Stewardship · Today's reading</div>
+      <h1>
+        Five positions, <span class="it">three</span> meeting cards on the desk.
+        <span class="small">— for Acme Equity Long/Short, as of last close.</span>
+      </h1>
+    </div>
+    <div class="summary">
+      <div class="lbl">At a glance</div>
+      <div class="stack">
+        <div>
+          <div class="num">5</div>
+          <div class="cap">Positions</div>
+        </div>
+        <div>
+          <div class="num accent">3</div>
+          <div class="cap">Proxies on file</div>
+        </div>
+        <div>
+          <div class="num">$141.4m</div>
+          <div class="cap">Long value</div>
+        </div>
+        <div>
+          <div class="num">34d</div>
+          <div class="cap">Next deadline</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="funds-panel">
+      <div class="ph">Funds Under Coverage</div>
+
+      <button class="fund-card f1 active">
+        <div class="row1">
+          <span class="dot"></span>
+          <span class="nm">Acme Equity Long/Short</span>
+        </div>
+        <div class="mt">Hedge fund · $2.40 B AUM</div>
+      </button>
+
+      <button class="fund-card f2">
+        <div class="row1">
+          <span class="dot"></span>
+          <span class="nm">Acme Municipal Pension Trust</span>
+        </div>
+        <div class="mt">Pension fund · $18.50 B AUM</div>
+      </button>
+
+      <div class="divider"></div>
+
+      <button class="panel-link">
+        <span>Voting policy</span>
+        <span class="arr">→</span>
+      </button>
+      <button class="panel-link">
+        <span>EDGAR wire</span>
+        <span class="arr">→</span>
+      </button>
+      <button class="panel-link">
+        <span>Audit log</span>
+        <span class="arr">→</span>
+      </button>
+    </aside>
+
+    <main>
+      <div class="h-head">
+        <h2>Holdings</h2>
+        <div class="sub">Click a card with a meeting card on file to begin.</div>
+      </div>
+
+      <div class="holdings">
+        <div class="hcard">
+          <div>
+            <div class="tk">AAPL · NASDAQ</div>
+            <div class="nm">Apple Inc.</div>
+            <div class="row">
+              <div>
+                <div class="l">Shares</div>
+                <div class="v">120,000</div>
+              </div>
+              <div>
+                <div class="l">Position</div>
+                <div class="v acc">$24.60 M</div>
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <span class="pill av">On file</span>
+            <span class="arrow">Read →</span>
+          </div>
+        </div>
+
+        <div class="hcard">
+          <div>
+            <div class="tk">MSFT · NASDAQ</div>
+            <div class="nm">Microsoft Corporation</div>
+            <div class="row">
+              <div>
+                <div class="l">Shares</div>
+                <div class="v">85,000</div>
+              </div>
+              <div>
+                <div class="l">Position</div>
+                <div class="v acc">$36.13 M</div>
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <span class="pill av">On file</span>
+            <span class="arrow">Read →</span>
+          </div>
+        </div>
+
+        <div class="hcard">
+          <div>
+            <div class="tk">NVDA · NASDAQ</div>
+            <div class="nm">NVIDIA Corporation</div>
+            <div class="row">
+              <div>
+                <div class="l">Shares</div>
+                <div class="v">18,500</div>
+              </div>
+              <div>
+                <div class="l">Position</div>
+                <div class="v acc">$25.40 M</div>
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <span class="pill av">On file</span>
+            <span class="arrow">Read →</span>
+          </div>
+        </div>
+
+        <div class="hcard muted">
+          <div>
+            <div class="tk">XOM · NYSE</div>
+            <div class="nm">Exxon Mobil Corporation</div>
+            <div class="row">
+              <div>
+                <div class="l">Shares</div>
+                <div class="v">310,000</div>
+              </div>
+              <div>
+                <div class="l">Position</div>
+                <div class="v">$35.96 M</div>
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <span class="pill un">Awaiting</span>
+          </div>
+        </div>
+
+        <div class="hcard muted">
+          <div>
+            <div class="tk">JPM · NYSE</div>
+            <div class="nm">JPMorgan Chase &amp; Co.</div>
+            <div class="row">
+              <div>
+                <div class="l">Shares</div>
+                <div class="v">95,000</div>
+              </div>
+              <div>
+                <div class="l">Position</div>
+                <div class="v">$19.30 M</div>
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <span class="pill un">Awaiting</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="h-foot">
+        <span>5 positions of record &nbsp;·&nbsp; <b>$141,385,000</b> total long</span>
+        <span>Coverage <b>60%</b></span>
+      </div>
+    </main>
+  </div>
+</div>
+
+</body>
+</html>

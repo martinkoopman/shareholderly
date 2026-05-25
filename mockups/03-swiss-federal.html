@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proxy Voter / Swiss Federal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <style>
+    :root {
+      --paper: #FFFFFF;
+      --paper-2: #F4F4F2;
+      --ink: #000000;
+      --ink-soft: #2A2A2A;
+      --mute: #8C8C8C;
+      --rule: #000000;
+      --rule-soft: #D8D6D2;
+      --red: #E63329;
+      --green: #1A7F40;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; background: var(--paper); color: var(--ink);
+      font-family: "Inter Tight", -apple-system, sans-serif;
+      font-size: 14px; line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "ss01","cv11";
+    }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* HEAD BAR — like the top of a Swiss federal document */
+    .topbar {
+      border-bottom: 2px solid var(--ink);
+      padding: 14px 32px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 32px;
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;
+    }
+    .topbar .seal {
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .topbar .seal .x {
+      display: inline-block; width: 22px; height: 22px;
+      background: var(--red); position: relative;
+    }
+    .topbar .seal .x::before, .topbar .seal .x::after {
+      content: ""; position: absolute; background: #fff;
+    }
+    .topbar .seal .x::before { left: 9px; top: 3px; width: 4px; height: 16px; }
+    .topbar .seal .x::after { left: 3px; top: 9px; width: 16px; height: 4px; }
+    .topbar .seal b { font-weight: 800; letter-spacing: 0.18em; }
+    .topbar .breadcrumb { color: var(--mute); }
+    .topbar .breadcrumb b { color: var(--ink); }
+    .topbar .meta { text-align: right; color: var(--mute); }
+    .topbar .meta b { color: var(--ink); margin-left: 14px; }
+
+    /* MAIN GRID */
+    .grid12 {
+      display: grid; grid-template-columns: repeat(12, 1fr);
+      gap: 0; min-height: calc(100vh - 51px);
+    }
+
+    /* LEFT SIDE — SECTION INDEX */
+    .index {
+      grid-column: span 3;
+      border-right: 1px solid var(--ink);
+      padding: 32px 24px 32px 32px;
+      background: var(--paper-2);
+    }
+    .section-num {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px; letter-spacing: 0.1em;
+      color: var(--mute); margin-bottom: 6px;
+    }
+    .section-h {
+      font-weight: 800; font-size: 22px;
+      letter-spacing: -0.02em; line-height: 1.1;
+      margin: 0 0 24px;
+    }
+    .fund-item {
+      display: block; width: 100%; text-align: left;
+      background: var(--paper); color: var(--ink);
+      border: 1px solid var(--ink);
+      padding: 16px 16px 14px;
+      margin-bottom: -1px;
+      font-family: inherit; cursor: pointer;
+      position: relative;
+      transition: background 100ms ease;
+    }
+    .fund-item:hover { background: var(--ink); color: var(--paper); }
+    .fund-item.active { background: var(--ink); color: var(--paper); }
+    .fund-item.active::after {
+      content: ""; position: absolute; right: 14px; top: 50%;
+      width: 0; height: 0; border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent; border-left: 9px solid var(--red);
+      transform: translateY(-50%);
+    }
+    .fund-item .num {
+      font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+      letter-spacing: 0.1em; opacity: 0.6;
+    }
+    .fund-item .nm { font-weight: 700; font-size: 16px; letter-spacing: -0.01em; line-height: 1.2; margin: 4px 0 6px; }
+    .fund-item .mt {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px; letter-spacing: 0.04em; opacity: 0.85;
+    }
+
+    /* RIGHT SIDE — DOCUMENT */
+    .doc {
+      grid-column: span 9;
+      padding: 40px 48px 64px;
+    }
+
+    .doc-meta {
+      display: flex; justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--ink);
+      margin-bottom: 28px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--mute);
+    }
+    .doc-meta b { color: var(--ink); }
+
+    /* MASSIVE DISPLAY HEADER */
+    .display-h {
+      font-weight: 900;
+      font-size: clamp(60px, 9vw, 132px);
+      line-height: 0.84;
+      letter-spacing: -0.045em;
+      margin: 0;
+    }
+    .display-h .alt { color: var(--red); }
+    .display-h .slash { color: var(--mute); font-weight: 400; }
+
+    .display-sub {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      margin-top: 32px;
+      padding-top: 18px;
+      border-top: 1px solid var(--ink);
+    }
+    .display-sub .cell { padding-right: 24px; }
+    .display-sub .l {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--mute);
+      margin-bottom: 6px;
+    }
+    .display-sub .v {
+      font-weight: 700; font-size: 22px;
+      letter-spacing: -0.015em;
+    }
+    .display-sub .v small { font-weight: 400; color: var(--mute); font-size: 12px; margin-left: 4px; letter-spacing: 0; }
+
+    /* HOLDINGS TABLE */
+    .tbl-h {
+      display: flex; justify-content: space-between; align-items: end;
+      margin: 48px 0 14px;
+    }
+    .tbl-h .l { font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }
+    .tbl-h .l .pre {
+      display: inline-block; background: var(--red); color: var(--paper);
+      padding: 3px 9px; font-size: 11px; letter-spacing: 0.14em;
+      font-weight: 700; vertical-align: 5px; margin-right: 10px;
+    }
+    .tbl-h .r {
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute);
+    }
+
+    table.t {
+      width: 100%; border-collapse: collapse; border-top: 2px solid var(--ink);
+    }
+    .t thead th {
+      text-align: left; padding: 8px 14px; font-weight: 700; font-size: 10.5px;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink);
+      border-bottom: 1px solid var(--ink);
+    }
+    .t thead th.r { text-align: right; }
+    .t tbody td { padding: 18px 14px; font-size: 14px; border-bottom: 1px solid var(--rule-soft); }
+    .t tbody td.r { text-align: right; font-family: "JetBrains Mono", monospace; font-variant-numeric: tabular-nums; }
+    .t tbody td.tk { font-family: "JetBrains Mono", monospace; font-weight: 700; letter-spacing: 0.05em; }
+    .t tbody td.cm { font-weight: 600; font-size: 16px; letter-spacing: -0.01em; }
+    .t tbody td.num { font-weight: 500; }
+
+    .t tbody tr.clickable { cursor: pointer; transition: background 100ms ease; }
+    .t tbody tr.clickable:hover { background: var(--paper-2); }
+    .t tbody tr.muted { opacity: 0.55; }
+    .t tbody tr.muted:hover { background: transparent; }
+
+    .arrow {
+      display: inline-block; font-size: 18px; color: var(--mute);
+      transition: color 100ms ease, transform 100ms ease;
+    }
+    .t tbody tr.clickable:hover .arrow { color: var(--red); transform: translateX(4px); }
+
+    .badge {
+      display: inline-block; padding: 4px 10px;
+      font-size: 10.5px; letter-spacing: 0.14em;
+      font-weight: 700; text-transform: uppercase;
+    }
+    .badge.av { background: var(--ink); color: var(--paper); }
+    .badge.un { background: var(--paper); color: var(--ink); border: 1px solid var(--ink); }
+    .badge.alert { background: var(--red); color: var(--paper); }
+
+    .tbl-foot {
+      border-bottom: 2px solid var(--ink);
+      padding: 14px;
+      display: flex; justify-content: space-between;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink); font-weight: 600;
+    }
+
+    /* FOOT (page numbering bottom) */
+    .pagefoot {
+      margin-top: 56px;
+      display: flex; justify-content: space-between;
+      padding-top: 14px; border-top: 1px solid var(--ink);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--mute);
+    }
+    .pagefoot b { color: var(--ink); }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="seal">
+    <span class="x"></span>
+    <b>PROXY VOTER</b>
+  </div>
+  <div class="breadcrumb">
+    Acme Capital &nbsp;/&nbsp; Stewardship Desk &nbsp;/&nbsp; <b>Holdings Register</b>
+  </div>
+  <div class="meta">
+    Edition 2026.05.25 <b>· M.KOOPMAN</b>
+  </div>
+</div>
+
+<div class="grid12">
+
+  <aside class="index">
+    <div class="section-num">SECTION 01 / 03</div>
+    <h2 class="section-h">Funds Under<br>Coverage</h2>
+
+    <button class="fund-item active">
+      <div class="num">01 — ACME-EQ</div>
+      <div class="nm">Acme Equity Long/Short</div>
+      <div class="mt">HEDGE FUND · $2.40 B</div>
+    </button>
+    <button class="fund-item">
+      <div class="num">02 — ACME-PEN</div>
+      <div class="nm">Acme Municipal Pension Trust</div>
+      <div class="mt">PENSION FUND · $18.50 B</div>
+    </button>
+
+    <div class="section-num" style="margin-top:38px">SECTION 02 / 03</div>
+    <h2 class="section-h">Reference</h2>
+    <button class="fund-item">
+      <div class="num">§ POLICY</div>
+      <div class="nm">Voting Policy</div>
+      <div class="mt">RULE BOOK · v2.1</div>
+    </button>
+
+    <div class="section-num" style="margin-top:38px">SECTION 03 / 03</div>
+    <h2 class="section-h">Wire</h2>
+    <button class="fund-item">
+      <div class="num">⌁ EDGAR</div>
+      <div class="nm">SEC EDGAR Wire</div>
+      <div class="mt">RATE LIMIT · 10 RPS</div>
+    </button>
+  </aside>
+
+  <main class="doc">
+
+    <div class="doc-meta">
+      <span>FILE NO. <b>ACME-EQ.HOLD.20260525</b></span>
+      <span>CLASSIFICATION · INTERNAL</span>
+      <span>PAGE <b>01</b> OF 04</span>
+    </div>
+
+    <h1 class="display-h">
+      Holdings<span class="slash"> /</span><br>
+      Register<span class="alt">.</span>
+    </h1>
+
+    <div class="display-sub">
+      <div class="cell">
+        <div class="l">Fund</div>
+        <div class="v">ACME-EQ <small>Hedge Fund</small></div>
+      </div>
+      <div class="cell">
+        <div class="l">Assets Under Management</div>
+        <div class="v">$2.40 B</div>
+      </div>
+      <div class="cell">
+        <div class="l">Positions</div>
+        <div class="v">5</div>
+      </div>
+      <div class="cell">
+        <div class="l">Proxy Coverage</div>
+        <div class="v">3 / 5 <small>(60%)</small></div>
+      </div>
+    </div>
+
+    <div class="tbl-h">
+      <div class="l"><span class="pre">01</span>Long-side positions</div>
+      <div class="r">Click any line bearing a filing →</div>
+    </div>
+
+    <table class="t">
+      <thead>
+        <tr>
+          <th style="width:30px">#</th>
+          <th style="width:90px">Ticker</th>
+          <th>Company</th>
+          <th class="r" style="width:130px">Shares</th>
+          <th class="r" style="width:180px">Position USD</th>
+          <th class="r" style="width:130px">Filing</th>
+          <th class="r" style="width:36px"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="clickable">
+          <td>01</td>
+          <td class="tk">AAPL</td>
+          <td class="cm">Apple Inc.</td>
+          <td class="r num">120,000</td>
+          <td class="r num">$24,600,000</td>
+          <td class="r"><span class="badge av">On file</span></td>
+          <td class="r"><span class="arrow">→</span></td>
+        </tr>
+        <tr class="clickable">
+          <td>02</td>
+          <td class="tk">MSFT</td>
+          <td class="cm">Microsoft Corporation</td>
+          <td class="r num">85,000</td>
+          <td class="r num">$36,125,000</td>
+          <td class="r"><span class="badge av">On file</span></td>
+          <td class="r"><span class="arrow">→</span></td>
+        </tr>
+        <tr class="clickable">
+          <td>03</td>
+          <td class="tk">NVDA</td>
+          <td class="cm">NVIDIA Corporation</td>
+          <td class="r num">18,500</td>
+          <td class="r num">$25,400,000</td>
+          <td class="r"><span class="badge av">On file</span></td>
+          <td class="r"><span class="arrow">→</span></td>
+        </tr>
+        <tr class="muted">
+          <td>04</td>
+          <td class="tk">XOM</td>
+          <td class="cm">Exxon Mobil Corporation</td>
+          <td class="r num">310,000</td>
+          <td class="r num">$35,960,000</td>
+          <td class="r"><span class="badge un">Awaiting</span></td>
+          <td class="r"></td>
+        </tr>
+        <tr class="muted">
+          <td>05</td>
+          <td class="tk">JPM</td>
+          <td class="cm">JPMorgan Chase &amp; Co.</td>
+          <td class="r num">95,000</td>
+          <td class="r num">$19,300,000</td>
+          <td class="r"><span class="badge un">Awaiting</span></td>
+          <td class="r"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="tbl-foot">
+      <span>TOTAL · 5 POSITIONS</span>
+      <span>628,500 SH &nbsp;·&nbsp; $141,385,000</span>
+    </div>
+
+    <div class="pagefoot">
+      <span>Acme Capital · Stewardship Office</span>
+      <span>Confidential · For internal use only</span>
+      <span>PAGE <b>01</b> / 04</span>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
