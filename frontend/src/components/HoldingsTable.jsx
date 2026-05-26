@@ -3,13 +3,6 @@ const fmt = (n) => n.toLocaleString("en-US");
 export default function HoldingsTable({ holdings, onPick }) {
   return (
     <>
-      <div className="tbl-h">
-        <div className="l">
-          <span className="pre">01</span>Long-side positions
-        </div>
-        <div className="r">Click any line bearing a filing →</div>
-      </div>
-
       <table className="t">
         <thead>
           <tr>
